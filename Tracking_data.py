@@ -144,7 +144,8 @@ def submit_tracking():
                 "event_id": event_id,
                 "applications": app_name,
                 "event_name": event_name,
-                "employee": employee_username
+                "employee": employee_username,
+                "category": app_name  # Auto-populate category with application name
             })
             response = requests.put(f"{ERP_URL}/api/resource/{doctype}/{name}",
                                  headers=headers, data=json.dumps(cd))
@@ -158,7 +159,8 @@ def submit_tracking():
                 "applications": app_name,
                 "event_name": event_name,
                 "window_title": new_window_title,
-                "employee": employee_username
+                "employee": employee_username,
+                "category": app_name  # Auto-populate category with application name
             }
             response = requests.post(f"{ERP_URL}/api/resource/{doctype}", headers=headers, data=json.dumps(payload))
  
@@ -187,4 +189,6 @@ def submit_tracking():
         }, 500
  
 if __name__ == '__main__':
-    app.run(debug=True, host='164.52.192.194', port=5000)
+    # Use 0.0.0.0 to allow access from network (including localhost)
+    # Change to specific IP when deploying to server
+    app.run(debug=True, host='0.0.0.0', port=5000)
