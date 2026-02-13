@@ -41,6 +41,14 @@ active_streams = {}  # employee_id -> { 'socket_id': str, 'employee_name': str, 
 def handle_connect():
     print(f'[WebRTC] ✅ Client connected: {request.sid}')
     emit('connected', {'socket_id': request.sid})
+    
+    # Send list of currently active streamers to the new connection
+    for employee_id, stream_info in active_streams.items():
+        emit('streamer-available', {
+            'employee_id': employee_id,
+            'employee_name': stream_info['employee_name']
+        }, room=request.sid)
+        print(f'[WebRTC] 📤 Sent active streamer to new client: {employee_id}')
 
 @socketio.on('disconnect')
 def handle_disconnect():
