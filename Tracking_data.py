@@ -13,15 +13,23 @@ SECRET_KEY = '8481cc547794ffc785537003eb752d0a8b7d0fcd83b9432f05915634e9e7b9f7y'
 
 # Helper functions for duration calculation
 def time_to_seconds(time_str):
-    """Convert HH:mm:ss to seconds"""
+    """Convert HH:mm:ss to seconds (Robust)"""
+    if not time_str:
+        return 0
     try:
-        h, m, s = map(int, time_str.split(':'))
-        return h * 3600 + m * 60 + s
-    except:
+        # Handle cases with decimals if any (though unlikely from formatted string)
+        parts = time_str.split(':')
+        if len(parts) == 3:
+            h, m, s = map(float, parts) # use float first to catch decimals
+            return int(h * 3600 + m * 60 + s)
+        return 0
+    except Exception as e:
+        print(f"Time conversion error for {time_str}: {e}")
         return 0
 
 def seconds_to_time(seconds):
     """Convert seconds to HH:mm:ss"""
+    seconds = int(seconds) # Ensure int
     h = seconds // 3600
     m = (seconds % 3600) // 60
     s = seconds % 60
@@ -148,6 +156,9 @@ def submit_tracking():
                 "applications": app_name,
                 "event_name": event_name,
                 "employee": employee_username,
+                "employee_name": full_name,
+                "from_date": today,
+                "to_date": today,
                 "category": app_name  # Auto-populate category with application name
             })
             response = requests.put(f"{ERP_URL}/api/resource/{doctype}/{name}",
@@ -163,6 +174,9 @@ def submit_tracking():
                 "event_name": event_name,
                 "window_title": new_window_title,
                 "employee": employee_username,
+                "employee_name": full_name,
+                "from_date": today,
+                "to_date": today,
                 "category": app_name  # Auto-populate category with application name
             }
             response = requests.post(f"{ERP_URL}/api/resource/{doctype}", headers=headers, data=json.dumps(payload))
