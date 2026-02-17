@@ -45,7 +45,7 @@ def Tracking_Event():
         doctype = data.get('module')  # Should be "Applications Tracking"
         values = data.get('values', {})
         access_token = data.get('access_token')
-        record_id = data.get('useruniqueid')  # Existing record ID for updates
+        record_id = data.get('record')  # Correct key from crmapi.js
 
         if not values or not access_token:
             return {
@@ -130,9 +130,10 @@ def Tracking_Event():
                     "idle_duration": accumulated_idle,
                     "window_title": combined_window_title,
                     "applications": app_name,
-                    "event_name": event_name,
+                    "event_name": event_name or f"Event {event_id}", # Fallback
                     "employee": employee_username,
                     "employee_name": employee_name,
+                    "name1": employee_name, # Map Employee Name to 'Name' field
                     "from_date": today,
                     "to_date": today,
                     "category": app_name
@@ -155,8 +156,9 @@ def Tracking_Event():
                 "window_title": values.get("window_title", ""),
                 "employee": employee_username,
                 "employee_name": employee_name,
+                "name1": employee_name, # Map Employee Name to 'Name' field
                 "applications": app_name,
-                "event_name": event_name,
+                "event_name": event_name or f"Event {event_id}", # Fallback
                 "from_date": today,
                 "to_date": today,
                 "category": app_name
