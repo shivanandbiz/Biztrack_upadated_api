@@ -70,6 +70,9 @@ def submit_tracking():
             if app_response.status_code == 200:
                 app_name = app_response.json().get('data', {}).get('app_name', "")
         
+        if not app_name:
+            return {"success": False, "message": "Application not found or invalid"}, 400
+        
         event_name = ""
         event_id = values.get("event_id")
         if event_id:
